@@ -36,16 +36,16 @@ g++ -o backup_tool backup_tool.cpp
 ```
 This will create an executable backup_tool (or backup_tool.exe on Windows).
 
-##Usage
+## Usage
 From Source Code
 1. Compile the tool as described above.
 
 2. Run the program:
-# Linux/macOS
+### Linux/macOS
 ```bash
 ./backup_tool
 ```
-# Windows
+### Windows
 ```bash
 backup_tool.exe   
 ```
