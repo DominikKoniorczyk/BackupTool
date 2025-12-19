@@ -14,7 +14,7 @@ All selected files, folders, and the target backup directory are saved for easy 
 
 ## Download Precompiled Executable (Windows)
 
-You can download the ready-to-use `.exe` from the [Releases](https://https://github.com/DominikKoniorczyk/BackupTool/releases) section.
+You can download the ready-to-use `.exe` from the [Releases]([https://https://github.com/DominikKoniorczyk/BackupTool/releases](https://github.com/DominikKoniorczyk/BackupTool/releases/)) section.
 
 
 ## Requirements
