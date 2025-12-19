@@ -8,7 +8,9 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <dwmapi.h>
 
+#pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "Comctl32.lib")
 
 namespace fs = std::filesystem;
@@ -25,6 +27,16 @@ size_t totalFiles = 0;
 
 // -------- CONFIG --------
 const std::wstring CONFIG_FILE = L"config.txt";
+
+
+COLORREF GetWindowsAccentColor() {
+    DWORD color = 0;
+    BOOL opaque = FALSE;
+    if (SUCCEEDED(DwmGetColorizationColor(&color, &opaque))) {
+        return RGB(GetRValue(color), GetGValue(color), GetBValue(color));
+    }
+    return GetSysColor(COLOR_WINDOW);
+}
 
 // -------- UTILS --------
 void LoadConfig() {
@@ -178,10 +190,22 @@ void RunBackup() {
     MessageBox(NULL, L"Backup finished!", L"Backup", MB_OK);
 }
 
+// ------- DELETE PATH --------
+bool DeletePath(const fs::path& path) {
+    try {
+        if (!fs::exists(path)) return false;
+        fs::remove_all(path);
+        return true;
+    }
+    catch (fs::filesystem_error& e) {
+        MessageBox(nullptr, std::wstring(L"Error deleting path: " + path.wstring() + L"\n" + std::wstring(e.what(), e.what() + strlen(e.what()))).c_str(), L"Error", MB_OK | MB_ICONERROR);
+        return false;
+    }
+}
+
 // -------- GUI --------
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    // Windows-Standard-Schriftart
     HFONT hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
 
     switch (msg) {
@@ -205,6 +229,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HWND hButton4 = CreateWindow(L"BUTTON", L"Start backup progress", WS_CHILD | WS_VISIBLE,
             670, 220, 150, 30, hwnd, (HMENU)3, nullptr, nullptr);
         SendMessage(hButton4, WM_SETFONT, (WPARAM)hFont, TRUE);
+
+        HWND hButtonDelete = CreateWindow( L"BUTTON", L"Delete selected path", WS_CHILD | WS_VISIBLE, 
+            670, 130, 150, 30,  hwnd, (HMENU)5, nullptr, nullptr );
+        SendMessage(hButtonDelete, WM_SETFONT, (WPARAM)hFont, TRUE);
 
         INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES | ICC_PROGRESS_CLASS };
         InitCommonControlsEx(&icex);
@@ -253,18 +281,29 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
             break;
         }
+        case 5: { // Delete selected path
+            int selIndex = (int)SendMessage(hListBox, LB_GETCURSEL, 0, 0);
+            if (selIndex == LB_ERR) {
+                MessageBox(hwnd, L"Please select a path in the list to delete.", L"Info", MB_OK);
+                break;
+            }
+
+            wchar_t buffer[1024];
+            SendMessage(hListBox, LB_GETTEXT, selIndex, (LPARAM)buffer);
+            std::wstring pathToDelete = buffer;
+
+            if (MessageBox(hwnd, (L"Are you sure you want to delete:\n" + pathToDelete).c_str(), L"Confirm Delete", MB_YESNO | MB_ICONWARNING) == IDYES) {
+                if (DeletePath(pathToDelete)) {
+                    SendMessage(hListBox, LB_DELETESTRING, selIndex, 0); // aus der ListBox entfernen
+                    auto it = std::find(paths.begin(), paths.end(), pathToDelete);
+                    if (it != paths.end()) paths.erase(it); // aus dem Pfad-Vektor entfernen
+                    SaveConfig(); // Config aktualisieren
+                }
+            }
+            break;
+        }
         }
         break;
-    }
-    case WM_ERASEBKGND: {
-        // <-- Dynamische Windows-Theme-Farbe -->
-        HDC hdc = (HDC)wParam;
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-        HBRUSH hbr = CreateSolidBrush(GetSysColor(COLOR_WINDOW));
-        FillRect(hdc, &rc, hbr);
-        DeleteObject(hbr);
-        return 1;
     }
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -284,9 +323,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
     wc.lpfnWndProc = WndProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = L"BackupToolClass";
-
-    // Hintergrundfarbe wird jetzt dynamisch in WM_ERASEBKGND gesetzt
-    wc.hbrBackground = nullptr;
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 
     RegisterClass(&wc);
 

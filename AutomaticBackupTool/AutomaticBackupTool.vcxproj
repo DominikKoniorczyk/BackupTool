@@ -74,7 +74,7 @@
     <OutDir>..\..\..\..\..\Desktop</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\..\..\..\Desktop</OutDir>
+    <OutDir>..\..\..\..\..\Desktop\Pr</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,6 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutomaticBackupTool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="BackupTool.exe.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
