@@ -30,7 +30,6 @@ cd your-repo-name
 ```
 Build from source (optional):
 
-Code kopieren
 # Using g++ as example
 ```bash
 g++ -o backup_tool backup_tool.cpp
