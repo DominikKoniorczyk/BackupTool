@@ -23,17 +23,18 @@ All selected files, folders, and the target backup directory are saved for easy 
 
 ```bash
 git clone https://github.com/yourusername/your-repo-name.git
+```
 Navigate to the project folder:
-
-bash
-Code kopieren
+```bash
 cd your-repo-name
+```
 Build from source (optional):
 
-bash
 Code kopieren
 # Using g++ as example
+```bash
 g++ -o backup_tool backup_tool.cpp
+```
 This will create an executable backup_tool (or backup_tool.exe on Windows).
 
 ##Usage
@@ -41,11 +42,14 @@ From Source Code
 1. Compile the tool as described above.
 
 2. Run the program:
-
-bash
-Code kopieren
-./backup_tool      # Linux/macOS
-backup_tool.exe    # Windows
+# Linux/macOS
+```bash
+./backup_tool
+```
+# Windows
+```bash
+backup_tool.exe   
+```
 
 3. Follow the prompts to select files, folders, and a target backup directory.
 
@@ -59,7 +63,7 @@ backup_tool.exe    # Windows
 Contributing
 Contributions are welcome! Please:
 
-Retain the original author: [Your Name]
+Retain the original author: Dominik Koniorczyk
 
 Clearly indicate your changes
 
