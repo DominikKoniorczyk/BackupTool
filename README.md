@@ -52,7 +52,7 @@ backup_tool.exe
 
 3. Follow the prompts to select files, folders, and a target backup directory.
 
-#Using Precompiled .exe (Windows)
+#### Using Precompiled .exe (Windows)
 1. Download the .exe from the releases section or from the bin/ folder (if included).
 
 2. Double-click the .exe or run it via command line.
