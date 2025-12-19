@@ -12,6 +12,11 @@ All selected files, folders, and the target backup directory are saved for easy 
 - Saves the selected sources and destination for future backups.
 - Provides both source code and optional precompiled `.exe` for convenience.
 
+## Download Precompiled Executable (Windows)
+
+You can download the ready-to-use `.exe` from the [Releases](https://https://github.com/DominikKoniorczyk/BackupTool/releases) section.
+
+
 ## Requirements
 
 - C++ compiler (e.g., GCC, Clang, MSVC) if you want to build from source.
